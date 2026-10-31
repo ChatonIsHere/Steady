@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- GameDir comes from Local.props (gitignored) or -p:GameDir=...; it's the game install to compile against. -->
+  <Import Project="Local.props" Condition="Exists('Local.props')" />
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>Steady</AssemblyName>
+    <RootNamespace>Steady</RootNamespace>
+    <Version>0.1.0</Version>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <Managed>$(GameDir)\A Township Tale_Data\Managed\</Managed>
+    <MelonLoaderDir>$(GameDir)\MelonLoader\net35\</MelonLoaderDir>
+  </PropertyGroup>
+
+  <Target Name="CheckGameDir" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(GameDir)' == '' Or !Exists('$(Managed)Root.Township.dll')"
+           Text="Set GameDir to an A Township Tale install with MelonLoader (in Local.props, or -p:GameDir=...). Got '$(GameDir)'." />
+  </Target>
+
+  <ItemGroup>
+    <Reference Include="Root.Township" HintPath="$(Managed)Root.Township.dll" Private="false" />
+    <Reference Include="Township.Core.Runtime" HintPath="$(Managed)Township.Core.Runtime.dll" Private="false" />
+    <Reference Include="Alta.Core.Runtime" HintPath="$(Managed)Alta.Core.Runtime.dll" Private="false" />
+    <Reference Include="Alta.Serialization.Runtime" HintPath="$(Managed)Alta.Serialization.Runtime.dll" Private="false" />
+    <Reference Include="Alta.NetworkTransport.Runtime" HintPath="$(Managed)Alta.NetworkTransport.Runtime.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(Managed)UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="NLog" HintPath="$(Managed)NLog.dll" Private="false" />
+    <Reference Include="MelonLoader" HintPath="$(MelonLoaderDir)MelonLoader.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(MelonLoaderDir)0Harmony.dll" Private="false" />
+  </ItemGroup>
+
+</Project>
