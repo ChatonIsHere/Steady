@@ -14,6 +14,7 @@ internal static class SteadyConfig
     private static MelonPreferences_Entry<int> _receivePoolSize;
     private static MelonPreferences_Entry<string> _logLevel;
     private static MelonPreferences_Entry<bool> _quietPathfinding;
+    private static MelonPreferences_Entry<bool> _rebuiltTilesOnly;
     private static MelonPreferences_Entry<int> _maxPhysicsHz;
     private static MelonPreferences_Entry<int> _maxCatchUpMs;
     private static MelonPreferences_Entry<int> _jobWorkers;
@@ -26,6 +27,7 @@ internal static class SteadyConfig
     public static int ReceivePoolSize => Math.Max(0, _receivePoolSize.Value);
     public static string LogLevel => _logLevel.Value;
     public static bool QuietPathfinding => _quietPathfinding.Value;
+    public static bool RebuiltTilesOnly => _rebuiltTilesOnly.Value;
     public static int MaxPhysicsHz => Math.Max(0, _maxPhysicsHz.Value);
     public static int MaxCatchUpMs => Math.Max(0, _maxCatchUpMs.Value);
     public static int JobWorkers => Math.Max(0, _jobWorkers.Value);
@@ -41,6 +43,7 @@ internal static class SteadyConfig
         _receivePoolSize = category.CreateEntry("ReceivePoolSize", 400, description: "64 KB network receive buffers kept for reuse (the game keeps 100 and throws the rest away after a burst).");
         _logLevel = category.CreateEntry("LogLevel", "Info", description: "Lowest level the game logs to its log file and console: Debug (the game's own), Info, Warn or Error. Console command replies are unaffected.");
         _quietPathfinding = category.CreateEntry("QuietPathfinding", true, description: "Only log pathfinding errors, not every path found.");
+        _rebuiltTilesOnly = category.CreateEntry("RebuiltTilesOnly", true, description: "Servers: after a navmesh update, re-cut only the tiles it rebuilt instead of the whole map (a 2-3 s freeze each time a forest chunk loads).");
         _maxPhysicsHz = category.CreateEntry("MaxPhysicsHz", 0, description: "Servers: cap physics steps per second (0 keeps the game's 45). Lower saves CPU on weak machines but makes physics coarser.");
         _maxCatchUpMs = category.CreateEntry("MaxCatchUpMs", 0, description: "Longest frame Unity simulates in full after a hitch (0 keeps Unity's 333). Lower ends hitches sooner, but game time slows during them.");
         _jobWorkers = category.CreateEntry("JobWorkers", 0, description: "Unity job worker threads (0 keeps Unity's choice, one per core). Under a container CPU limit, set it to the limit minus one.");

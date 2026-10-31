@@ -38,6 +38,7 @@ public class SteadyMod : MelonMod
             SpawnCheck.Apply();
             PlayerSaves.Apply();
             PhysicsRate.Apply();
+            NavmeshReload.Apply();
             Alta.Console.CommandService.CommandCollection.Collect(Assembly.GetExecutingAssembly());
         }
         // NLog and the scene aren't set up until the game starts.
