@@ -39,6 +39,8 @@ public class SteadyMod : MelonMod
             PlayerSaves.Apply();
             PhysicsRate.Apply();
             NavmeshReload.Apply();
+            SaveOnce.Apply();
+            UnchangedChunks.Apply();
             Alta.Console.CommandService.CommandCollection.Collect(Assembly.GetExecutingAssembly());
         }
         // NLog and the scene aren't set up until the game starts.

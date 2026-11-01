@@ -25,6 +25,7 @@
     <Reference Include="Township.Core.Runtime" HintPath="$(Managed)Township.Core.Runtime.dll" Private="false" />
     <Reference Include="Alta.Core.Runtime" HintPath="$(Managed)Alta.Core.Runtime.dll" Private="false" />
     <Reference Include="Alta.Serialization.Runtime" HintPath="$(Managed)Alta.Serialization.Runtime.dll" Private="false" />
+    <Reference Include="Alta.IO" HintPath="$(Managed)Alta.IO.dll" Private="false" />
     <Reference Include="Alta.NetworkTransport.Runtime" HintPath="$(Managed)Alta.NetworkTransport.Runtime.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(Managed)UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="NLog" HintPath="$(Managed)NLog.dll" Private="false" />

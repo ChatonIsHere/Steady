@@ -10,6 +10,8 @@ neither needs the other.
 | --- | --- | --- |
 | The game forces a full garbage collection every 30 s on servers. Each one freezes the server (0.2 s idle on Windows, 2-3 s under Wine). Steady stops it; the incremental GC the game already has does the work in small slices. | Server | `ForcedGc` |
 | Each time the server loads a forest chunk, it rebuilds that chunk's navmesh tiles, then re-cuts all ~19,000 tiles in the map instead of only the rebuilt ones: a 2-3 s freeze about once a minute once the world is loaded. Steady re-cuts only the rebuilt tiles, as the pathfinding library intends. That also stops holes from removed trees and rocks staying in the navmesh. | Server | `RebuiltTilesOnly` |
+| Saving serializes every component twice: once only to measure its length, then for real. Steady serializes it once into a scratch buffer at the same bit alignment and copies it in, so the save files are byte-for-byte the same. | Server | `SinglePassSaves` |
+| Every autosave rewrites the file of every loaded chunk, though about half are unchanged apart from the save date (which the game never reads). Steady compares with the file on disk and leaves unchanged ones (and their backups) alone. | Server | `SkipUnchangedChunks` |
 | An autosave saves every player in one frame. Steady saves them over the next frames. `save now` and shutdown still save everyone at once. | Server | `SpreadPlayerSaves`, `PlayerSaveBudgetMs` |
 | Every network send checks which players each entity is spawned for with a scan that allocates. Steady uses a set lookup with the same answer. | Server | `FastSpawnCheck` |
 | The game's stream readers and writers (one per saved entity, and some network messages) keep a finalizer after they're disposed, so each survives an extra GC. | Both | `SuppressFinalizers` |
@@ -35,7 +37,7 @@ Settings are in `[Steady]` in `UserData/MelonPreferences.cfg` and apply on the n
 ## Commands
 
 `steady status` (server console) says which fixes are on, how many players were saved over frames, how
-many receive buffers were dropped, and the GC count and heap size.
+many receive buffers were dropped, how many unchanged chunk files were skipped, and the GC count and heap size.
 
 ## Notes
 
