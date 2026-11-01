@@ -32,6 +32,7 @@ public class SteadyMod : MelonMod
 
         StreamFinalizers.Apply();
         ReceivePool.Apply();
+        AreaFill.Apply();
         if (IsServer)
         {
             GcFix.Apply();
