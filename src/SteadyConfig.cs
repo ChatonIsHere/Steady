@@ -20,7 +20,6 @@ internal static class SteadyConfig
     private static MelonPreferences_Entry<int> _maxPhysicsHz;
     private static MelonPreferences_Entry<int> _maxCatchUpMs;
     private static MelonPreferences_Entry<int> _jobWorkers;
-    private static MelonPreferences_Entry<int> _navmeshCutIntervalMs;
 
     public static bool ForcedGc => _forcedGc.Value;
     public static bool SpreadPlayerSaves => _spreadPlayerSaves.Value;
@@ -36,7 +35,6 @@ internal static class SteadyConfig
     public static int MaxPhysicsHz => Math.Max(0, _maxPhysicsHz.Value);
     public static int MaxCatchUpMs => Math.Max(0, _maxCatchUpMs.Value);
     public static int JobWorkers => Math.Max(0, _jobWorkers.Value);
-    public static int NavmeshCutIntervalMs => Math.Max(0, _navmeshCutIntervalMs.Value);
 
     public static void Init()
     {
@@ -55,7 +53,6 @@ internal static class SteadyConfig
         _maxPhysicsHz = category.CreateEntry("MaxPhysicsHz", 0, description: "Servers: cap physics steps per second (0 keeps the game's 45). Lower saves CPU on weak machines but makes physics coarser.");
         _maxCatchUpMs = category.CreateEntry("MaxCatchUpMs", 0, description: "Longest frame Unity simulates in full after a hitch (0 keeps Unity's 333). Lower ends hitches sooner, but game time slows during them.");
         _jobWorkers = category.CreateEntry("JobWorkers", 0, description: "Unity job worker threads (0 keeps Unity's choice, one per core). Under a container CPU limit, set it to the limit minus one.");
-        _navmeshCutIntervalMs = category.CreateEntry("NavmeshCutIntervalMs", 0, description: "Servers: how often to apply navmesh cuts (trees, rocks, buildings) to pathfinding, in ms (0 keeps the game's every frame). Higher folds more changes into each costly update; creatures see a change that much later.");
         // MelonLoader only saves on a clean exit, which a killed server never gets.
         category.SaveToFile(false);
     }
