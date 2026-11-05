@@ -43,10 +43,10 @@ many receive buffers were dropped, how many unchanged chunk files were skipped, 
 
 ## Notes
 
-- With `LogLevel` above Debug, Canary's `canary debug on` adds Trace lines only, not Debug.
-- Outside the mod, changes to the server host are tracked in [HOST.md](HOST.md).
+With `LogLevel` above Debug, Canary's `canary debug on` adds Trace lines only, not Debug.
 
 ## Building
 
-Set `GameDir` in `Local.props` (or pass `-p:GameDir=...`) to a game install with MelonLoader, then
+Set `GameDir` in `Local.props` (or pass `-p:GameDir=...`) to a game install with MelonLoader, or to a checkout
+of [att-stubs](https://github.com/ChatonIsHere/att-stubs)' `full` branch, then
 `dotnet build -c Release`. The DLL is `bin/Release/Steady.dll`; put it in the game's `Mods` folder.
