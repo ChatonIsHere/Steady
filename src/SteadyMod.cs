@@ -12,7 +12,7 @@ namespace Steady;
 
 public class SteadyMod : MelonMod
 {
-    public const string Version = "0.1.0";
+    public const string Version = Build.Version;
 
     internal static MelonLogger.Instance Log { get; private set; }
 
