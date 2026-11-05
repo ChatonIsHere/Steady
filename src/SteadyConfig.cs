@@ -18,6 +18,7 @@ internal static class SteadyConfig
     private static MelonPreferences_Entry<bool> _singlePassSaves;
     private static MelonPreferences_Entry<bool> _skipUnchangedChunks;
     private static MelonPreferences_Entry<bool> _fastAreaFill;
+    private static MelonPreferences_Entry<bool> _dropDeadReferences;
     private static MelonPreferences_Entry<int> _maxPhysicsHz;
     private static MelonPreferences_Entry<int> _maxCatchUpMs;
     private static MelonPreferences_Entry<int> _jobWorkers;
@@ -34,6 +35,7 @@ internal static class SteadyConfig
     public static bool SinglePassSaves => _singlePassSaves.Value;
     public static bool SkipUnchangedChunks => _skipUnchangedChunks.Value;
     public static bool FastAreaFill => _fastAreaFill.Value;
+    public static bool DropDeadReferences => _dropDeadReferences.Value;
     public static int MaxPhysicsHz => Math.Max(0, _maxPhysicsHz.Value);
     public static int MaxCatchUpMs => Math.Max(0, _maxCatchUpMs.Value);
     public static int JobWorkers => Math.Max(0, _jobWorkers.Value);
@@ -53,6 +55,7 @@ internal static class SteadyConfig
         _singlePassSaves = category.CreateEntry("SinglePassSaves", true, description: "Servers: serialize each saved component once instead of twice (once to measure, once to write). The save files are byte-for-byte the same.");
         _skipUnchangedChunks = category.CreateEntry("SkipUnchangedChunks", true, description: "Servers: don't rewrite a chunk file when it would come out the same as the file on disk apart from the save date.");
         _fastAreaFill = category.CreateEntry("FastAreaFill", true, description: "Work out which parts of the navmesh connect (after every navmesh change) about a quarter faster. The result is the same, node for node; anything unusual uses the game's own.");
+        _dropDeadReferences = category.CreateEntry("DropDeadReferences", true, description: "Servers: drop the references the game keeps to destroyed creatures, attacks and items, and to players who have left, so their memory can be freed.");
         _maxPhysicsHz = category.CreateEntry("MaxPhysicsHz", 0, description: "Servers: cap physics steps per second (0 keeps the game's 45). Lower saves CPU on weak machines but makes physics coarser.");
         _maxCatchUpMs = category.CreateEntry("MaxCatchUpMs", 0, description: "Longest frame Unity simulates in full after a hitch (0 keeps Unity's 333). Lower ends hitches sooner, but game time slows during them.");
         _jobWorkers = category.CreateEntry("JobWorkers", 0, description: "Unity job worker threads (0 keeps Unity's choice, one per core). Under a container CPU limit, set it to the limit minus one.");
