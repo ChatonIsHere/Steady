@@ -42,6 +42,7 @@ public class SteadyMod : MelonMod
             NavmeshReload.Apply();
             SaveOnce.Apply();
             UnchangedChunks.Apply();
+            DeadReferences.Apply();
             Alta.Console.CommandService.CommandCollection.Collect(Assembly.GetExecutingAssembly());
         }
         // NLog and the scene aren't set up until the game starts.
@@ -57,6 +58,7 @@ public class SteadyMod : MelonMod
     {
         PlayerSaves.Tick();
         Runtime.Tick();
+        DeadReferences.Tick();
     }
 
     // Patches one method, or warns and carries on if the game doesn't have it.
