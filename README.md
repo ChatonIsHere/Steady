@@ -50,3 +50,5 @@ With `LogLevel` above Debug, Canary's `canary debug on` adds Trace lines only, n
 Set `GameDir` in `Local.props` (or pass `-p:GameDir=...`) to a game install with MelonLoader, or to a checkout
 of [att-stubs](https://github.com/ChatonIsHere/att-stubs)' `full` branch, then
 `dotnet build -c Release`. The DLL is `bin/Release/Steady.dll`; put it in the game's `Mods` folder.
+Each push to main is released as `YY.M.N` (year, month, and the release's number in that month); local builds
+are `0.0.0-dev`.
