@@ -41,7 +41,8 @@ namespace Steady.Fixes;
 //   hit handlers on if disabled mid-shot). A destroyed tool keeps both too, and SeedSpray's shot arrays go back to a
 //   pool that never clears them, so they keep destroyed seeds. SpawnMessage and SceneEntityMessage keep the last
 //   entity they were set for, and TargetCollectorManager targets that no longer exist until a collector is forced to
-//   update. Each of these held a whole unloaded area's destroyed entities through the links between them.
+//   update. ImpactTool keeps the last hit's contact (both colliders and the detector) in a static array until the next
+//   hit. Each of these held a whole unloaded area's destroyed entities through the links between them.
 // Target sets are pruned as the game uses them, the rest every 5 minutes, one kind per frame (each search of all
 // objects is a few hundred milliseconds on a big world).
 internal static class DeadReferences
@@ -73,6 +74,7 @@ internal static class DeadReferences
         AccessTools.Field(typeof(Alta.Networking.SpawnMessage), "entity"),
         AccessTools.Field(typeof(Alta.Networking.SceneEntityMessage), "entity"),
     };
+    private static readonly System.Reflection.FieldInfo SingleContact = AccessTools.Field(typeof(ImpactTool), "singleContact");
     private static readonly System.Reflection.FieldInfo CollectorTargets = AccessTools.Field(typeof(TargetCollectorManager), "targets");
     private static readonly System.Reflection.FieldInfo ComponentAction = AccessTools.Field(typeof(ActionComponent), "action");
     private static readonly System.Reflection.FieldInfo[] TriggerMaps =
@@ -269,6 +271,10 @@ internal static class DeadReferences
             }
         foreach (var field in LastEntities)
             if (IsDestroyed(field?.GetValue(null))) field.SetValue(null, null);
+        // The game only reads it in the hit that writes it.
+        if (SingleContact?.GetValue(null) is ContactPointStructure[] { Length: > 0 } last
+            && (IsDestroyed(last[0].ThisCollider) || IsDestroyed(last[0].OtherCollider) || IsDestroyed(last[0].Detector)))
+            last[0] = default;
         if (CollectorTargets?.GetValue(null) is LinkedList<ITarget> targets)
             for (var node = targets.First; node != null;)
             {
