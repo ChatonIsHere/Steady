@@ -38,6 +38,7 @@
     <Reference Include="Alta.IO" HintPath="$(Managed)Alta.IO.dll" Private="false" />
     <Reference Include="Alta.NetworkTransport.Runtime" HintPath="$(Managed)Alta.NetworkTransport.Runtime.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(Managed)UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.PhysicsModule" HintPath="$(Managed)UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="NLog" HintPath="$(Managed)NLog.dll" Private="false" />
     <Reference Include="MelonLoader" HintPath="$(MelonLoaderDir)MelonLoader.dll" Private="false" />
     <Reference Include="0Harmony" HintPath="$(MelonLoaderDir)0Harmony.dll" Private="false" />
