@@ -40,6 +40,7 @@ public class SteadyMod : MelonMod
             PlayerSaves.Apply();
             PhysicsRate.Apply();
             NavmeshReload.Apply();
+            CutChecks.Apply();
             SaveOnce.Apply();
             UnchangedChunks.Apply();
             DeadReferences.Apply();
