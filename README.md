@@ -79,6 +79,10 @@ and `FastNearestNode` run alongside theirs.
 
 `steady status` on the server console shows which fixes are on and what they've done.
 
+With [Canary](https://github.com/ChatonIsHere/Canary) recording, Steady also sends it those counters once a second
+(area fills and their time, chunk loads held and waiting, forest instructions moved, and the rest), so they show on
+the viewer's timeline beside each spike. Turn it off with `CanaryMetrics`.
+
 ## Building
 
 Set `GameDir` in `Local.props` (or pass `-p:GameDir=...`) to a game install with MelonLoader, or to a checkout

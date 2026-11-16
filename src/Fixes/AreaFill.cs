@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Threading;
 using HarmonyLib;
 using Pathfinding;
 
@@ -24,6 +26,11 @@ internal static class AreaFill
     private static uint[] _area = new uint[0], _old = new uint[0];
     private static bool[] _walkable = new bool[0];
     private static int _generation;
+    private static long _localTicks, _fullTicks;
+
+    // Time spent in fills done locally and in full (Steady's or the game's), for CanaryMetrics.
+    public static double LocalMs => Interlocked.Read(ref _localTicks) * 1000.0 / Stopwatch.Frequency;
+    public static double FullMs => Interlocked.Read(ref _fullTicks) * 1000.0 / Stopwatch.Frequency;
 
     public static void Apply()
     {
@@ -33,9 +40,15 @@ internal static class AreaFill
             SteadyMod.Active.Add("fast area fill");
     }
 
-    private static bool FloodFill(AstarPath ___astar, ref uint ___lastUniqueAreaIndex)
+    private static bool FloodFill(AstarPath ___astar, ref uint ___lastUniqueAreaIndex, out long __state)
     {
-        if (LocalAreaFill.TryRepair(___astar, ref ___lastUniqueAreaIndex)) return false;
+        __state = Stopwatch.GetTimestamp();
+        if (LocalAreaFill.TryRepair(___astar, ref ___lastUniqueAreaIndex))
+        {
+            Interlocked.Add(ref _localTicks, Stopwatch.GetTimestamp() - __state);
+            __state = 0;
+            return false;
+        }
         if (!SteadyConfig.FastAreaFill) return true;
         int shared;
         uint last;
@@ -62,8 +75,9 @@ internal static class AreaFill
         return false;
     }
 
-    private static Exception Filled(Exception __exception)
+    private static Exception Filled(Exception __exception, long __state)
     {
+        if (__state != 0) Interlocked.Add(ref _fullTicks, Stopwatch.GetTimestamp() - __state);
         LocalAreaFill.FillDone(__exception == null);
         return __exception;
     }

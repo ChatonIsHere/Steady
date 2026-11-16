@@ -28,6 +28,7 @@ internal static class SteadyConfig
     private static MelonPreferences_Entry<bool> _caveScanFix;
     private static MelonPreferences_Entry<bool> _graphMaskFix;
     private static MelonPreferences_Entry<int> _pathThreads;
+    private static MelonPreferences_Entry<bool> _canaryMetrics;
     private static MelonPreferences_Entry<int> _maxPhysicsHz;
     private static MelonPreferences_Entry<int> _maxCatchUpMs;
     private static MelonPreferences_Entry<int> _jobWorkers;
@@ -54,6 +55,7 @@ internal static class SteadyConfig
     public static bool CaveScanFix => _caveScanFix.Value;
     public static bool GraphMaskFix => _graphMaskFix.Value;
     public static int PathThreads => Math.Max(0, Math.Min(8, _pathThreads.Value));
+    public static bool CanaryMetrics => _canaryMetrics.Value;
     public static int MaxPhysicsHz => Math.Max(0, _maxPhysicsHz.Value);
     public static int MaxCatchUpMs => Math.Max(0, _maxCatchUpMs.Value);
     public static int JobWorkers => Math.Max(0, _jobWorkers.Value);
@@ -83,6 +85,7 @@ internal static class SteadyConfig
         _caveScanFix = category.CreateEntry("CaveScanFix", true, description: "Servers: scan cave layers' navmeshes one at a time, and retry a failed scan, instead of leaving the layer without paths (or a static cave unloaded) when two load together.");
         _graphMaskFix = category.CreateEntry("GraphMaskFix", true, description: "Servers: stop masks meant for graphs 0-31 (like the forest's 'overworld only') also taking cave graphs 32, 64 and so on.");
         _pathThreads = category.CreateEntry("PathThreads", 0, description: "Servers: pathfinding threads (0 keeps the game's one). With creatures busy in caves one thread can fall behind; each extra thread uses another core.");
+        _canaryMetrics = category.CreateEntry("CanaryMetrics", true, description: "While Canary is recording, send it what Steady did each second (area fills, chunk loads held, forest instructions moved and so on), so a recording shows it beside each spike.");
         _maxPhysicsHz = category.CreateEntry("MaxPhysicsHz", 0, description: "Servers: cap physics steps per second (0 keeps the game's 45). Lower saves CPU on weak machines but makes physics coarser.");
         _maxCatchUpMs = category.CreateEntry("MaxCatchUpMs", 0, description: "Longest frame Unity simulates in full after a hitch (0 keeps Unity's 333). Lower ends hitches sooner, but game time slows during them.");
         _jobWorkers = category.CreateEntry("JobWorkers", 0, description: "Unity job worker threads (0 keeps Unity's choice, one per core). Under a container CPU limit, set it to the limit minus one.");

@@ -18,6 +18,7 @@ internal static class ChunkLoads
     private static double _spentMs;   // entity loading in the current release, timed where it runs
     private static int _loads;
     public static long Spread { get; private set; }
+    public static int Pending => Waiting.Count;   // main thread only
 
     public static void Apply()
     {

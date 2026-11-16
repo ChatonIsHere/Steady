@@ -62,6 +62,7 @@ public class SteadyMod : MelonMod
         {
             Logging.Apply();
             Runtime.Apply();
+            CanaryMetrics.Apply();
             Log.Msg("On: " + (Active.Count == 0 ? "nothing" : string.Join(", ", Active)));
         });
     }
@@ -72,6 +73,7 @@ public class SteadyMod : MelonMod
         Runtime.Tick();
         DeadReferences.Tick();
         ChunkLoads.Tick();
+        CanaryMetrics.Tick();
     }
 
     // Patches one method, or warns and carries on if the game doesn't have it. A lower priority runs our prefix after
