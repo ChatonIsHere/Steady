@@ -15,6 +15,7 @@ public class SteadyMod : MelonMod
     public const string Version = Build.Version;
 
     internal static MelonLogger.Instance Log { get; private set; }
+    internal static int MainThread { get; private set; }
 
     public static bool IsServer { get; } =
         Environment.GetCommandLineArgs().Any(a => string.Equals(a, "/start_server", StringComparison.OrdinalIgnoreCase));
@@ -27,15 +28,19 @@ public class SteadyMod : MelonMod
     public override void OnInitializeMelon()
     {
         Log = LoggerInstance;
+        MainThread = System.Threading.Thread.CurrentThread.ManagedThreadId;
         _harmony = HarmonyInstance;
         SteadyConfig.Init();
+        Others.Detect();
 
         StreamFinalizers.Apply();
         ReceivePool.Apply();
+        if (IsServer) LocalAreaFill.Apply();
         AreaFill.Apply();
         if (IsServer)
         {
             GcFix.Apply();
+            ScanGc.Apply();
             SpawnCheck.Apply();
             PlayerSaves.Apply();
             PhysicsRate.Apply();
@@ -44,6 +49,12 @@ public class SteadyMod : MelonMod
             SaveOnce.Apply();
             UnchangedChunks.Apply();
             DeadReferences.Apply();
+            NearestNode.Apply();
+            GraphMask.Apply();
+            PathThreads.Apply();
+            CaveScans.Apply();
+            ChunkLoads.Apply();
+            ForestPacing.Apply();
             Alta.Console.CommandService.CommandCollection.Collect(Assembly.GetExecutingAssembly());
         }
         // NLog and the scene aren't set up until the game starts.
@@ -60,22 +71,23 @@ public class SteadyMod : MelonMod
         PlayerSaves.Tick();
         Runtime.Tick();
         DeadReferences.Tick();
+        ChunkLoads.Tick();
     }
 
-    // Patches one method, or warns and carries on if the game doesn't have it.
-    internal static bool Patch(MethodBase target, string name, Type patches, string prefix = null, string postfix = null, string finalizer = null)
+    // Patches one method, or warns and carries on if the game doesn't have it. A lower priority runs our prefix after
+    // other mods' prefixes on the same method.
+    internal static bool Patch(MethodBase target, string name, Type patches, string prefix = null, string postfix = null,
+        string finalizer = null, string transpiler = null, int priority = HarmonyLib.Priority.Normal)
     {
         if (target == null)
         {
             Log.Warning($"{name}: target not found, skipped.");
             return false;
         }
+        HarmonyMethod Method(string m) => m == null ? null : new HarmonyMethod(patches, m) { priority = priority };
         try
         {
-            _harmony.Patch(target,
-                prefix == null ? null : new HarmonyMethod(patches, prefix),
-                postfix == null ? null : new HarmonyMethod(patches, postfix),
-                finalizer: finalizer == null ? null : new HarmonyMethod(patches, finalizer));
+            _harmony.Patch(target, Method(prefix), Method(postfix), Method(transpiler), Method(finalizer), ilmanipulator: null);
             return true;
         }
         catch (Exception e)

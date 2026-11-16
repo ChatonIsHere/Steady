@@ -15,6 +15,8 @@ public static class SteadyCommands
         $"Steady {SteadyMod.Version}. On: {string.Join(", ", SteadyMod.Active)}.\n"
         + $"Players saved over frames: {PlayerSaves.Spread}. Receive buffers dropped past the pool: {ReceivePool.Dropped}. "
         + $"Unchanged chunk files skipped: {UnchangedChunks.Skipped}.\n"
+        + $"Area fills done locally: {LocalAreaFill.Repaired} (full: {LocalAreaFill.Full}: {LocalAreaFill.FallbackSummary()}; last other navmesh work: {LocalAreaFill.LastOther}). Graphs skipped finding nearest nodes: {NearestNode.Skipped}. "
+        + $"Chunk loads held for a later frame: {ChunkLoads.Spread}. Forest instructions moved to a later frame: {ForestPacing.Deferred}. Cave scans retried: {CaveScans.Retried}.\n"
         + $"GC: {GC.CollectionCount(0)} collections, heap {GC.GetTotalMemory(false) / 1048576} MB, incremental {GarbageCollector.isIncremental}. "
         + $"Physics {1f / Time.fixedDeltaTime:F0} Hz.";
 }

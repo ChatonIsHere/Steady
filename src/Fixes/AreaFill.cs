@@ -27,14 +27,16 @@ internal static class AreaFill
 
     public static void Apply()
     {
-        if (!SteadyConfig.FastAreaFill || Processor == null || NextIndex == null) return;
+        if ((!SteadyConfig.FastAreaFill && !LocalAreaFill.On) || Processor == null || NextIndex == null) return;
         var fill = AccessTools.Method(AccessTools.TypeByName("Pathfinding.GraphUpdateProcessor"), "FloodFill", Type.EmptyTypes);
-        if (SteadyMod.Patch(fill, "FastAreaFill", typeof(AreaFill), nameof(FloodFill)))
+        if (SteadyMod.Patch(fill, "FastAreaFill", typeof(AreaFill), nameof(FloodFill), finalizer: nameof(Filled)) && SteadyConfig.FastAreaFill)
             SteadyMod.Active.Add("fast area fill");
     }
 
     private static bool FloodFill(AstarPath ___astar, ref uint ___lastUniqueAreaIndex)
     {
+        if (LocalAreaFill.TryRepair(___astar, ref ___lastUniqueAreaIndex)) return false;
+        if (!SteadyConfig.FastAreaFill) return true;
         int shared;
         uint last;
         lock (Gate)
@@ -58,6 +60,12 @@ internal static class AreaFill
         if (shared > 0)
             UnityEngine.Debug.LogError(shared + " areas had to share IDs. This usually doesn't affect pathfinding in any significant way (you might get 'Searched whole area but could not find target' as a reason for path failure) however some path requests may take longer to calculate (specifically those that fail with the 'Searched whole area' error).The maximum number of areas is " + 131071u + ".");
         return false;
+    }
+
+    private static Exception Filled(Exception __exception)
+    {
+        LocalAreaFill.FillDone(__exception == null);
+        return __exception;
     }
 
     private static bool Fill(AstarPath astar, out uint last, out int shared)
