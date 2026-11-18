@@ -24,6 +24,7 @@ public class SteadyMod : MelonMod
     internal static readonly List<string> Active = new();
 
     private static HarmonyLib.Harmony _harmony;
+    internal static string HarmonyId => _harmony.Id;
 
     public override void OnInitializeMelon()
     {
@@ -33,6 +34,7 @@ public class SteadyMod : MelonMod
         SteadyConfig.Init();
         Others.Detect();
 
+        AltaCutoff.Apply();
         StreamFinalizers.Apply();
         ReceivePool.Apply();
         if (IsServer) LocalAreaFill.Apply();
@@ -63,6 +65,7 @@ public class SteadyMod : MelonMod
             Logging.Apply();
             Runtime.Apply();
             CanaryMetrics.Apply();
+            AltaCutoff.Report();
             Log.Msg("On: " + (Active.Count == 0 ? "nothing" : string.Join(", ", Active)));
         });
     }

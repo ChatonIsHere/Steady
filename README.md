@@ -8,8 +8,8 @@ game does wastefully and leaves gameplay alone. Install it on a server, a client
 ## Fixes
 
 All on by default. Each has a setting under `[Steady]` in `UserData/MelonPreferences.cfg`, read at startup.
-On clients only `FastAreaFill`, `SuppressFinalizers`, `ReceivePoolSize`, `LogLevel` and `QuietPathfinding`
-apply.
+On clients only `FastAreaFill`, `SuppressFinalizers`, `ReceivePoolSize`, `LogLevel`, `QuietPathfinding` and
+`CutOffAlta` apply.
 
 ### Freezes
 
@@ -50,6 +50,12 @@ apply.
 | --- | --- |
 | `LogLevel` | The game logs at Debug. Steady raises it to Info. Console replies are unaffected. Above Debug, Canary's `canary debug on` adds Trace lines only. |
 | `QuietPathfinding` | Pathfinding logs every path found. Steady logs only errors. |
+
+### Alta's web services
+
+| Setting | Fix |
+| --- | --- |
+| `CutOffAlta` | Alta's web services are gone, but the game still calls them, and each call hangs until it times out (40 s or more). Steady cuts them off without standing in for Alta. The calls that ask Alta something get an empty answer: no public IP, no permission, no news or reports, no login refresh, and analytics are dropped. Any other request to Alta's hosts fails at once, the way a timeout does. A mod that answers one of these calls itself (TavernLib, TavernEssentials, AltaApiRemoval) still does, and Steady stands aside. |
 
 Steady also removes the extra physics-rate updater each server settings reload leaves behind.
 
