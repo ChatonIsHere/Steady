@@ -9,7 +9,7 @@ game does wastefully and leaves gameplay alone. Install it on a server, a client
 
 All on by default. Each has a setting under `[Steady]` in `UserData/MelonPreferences.cfg`, read at startup.
 On clients only `FastAreaFill`, `ForestBudgetMs`, `SuppressFinalizers`, `ReceivePoolSize`, `LogLevel`,
-`QuietPathfinding` and `CutOffAlta` apply.
+`QuietPathfinding`, `ImpactResolverFix` and `CutOffAlta` apply.
 
 ### Freezes
 
@@ -50,6 +50,12 @@ On clients only `FastAreaFill`, `ForestBudgetMs`, `SuppressFinalizers`, `Receive
 | --- | --- |
 | `LogLevel` | The game logs at Debug. Steady raises it to Info. Console replies are unaffected. Above Debug, Canary's `canary debug on` adds Trace lines only. |
 | `QuietPathfinding` | Pathfinding logs every path found. Steady logs only errors. |
+
+### Damage
+
+| Setting | Fix |
+| --- | --- |
+| `ImpactResolverFix` | The game resolves hits by held items once a frame (on a server, players hitting players; on a client, the player's own hits on creatures and things), and if that fails once (a hit whose tool has no entity, say), it stops resolving them until a restart: those hits do no damage, and they pile up in memory. Steady skips the hits the game can't resolve, and if it fails anyway, drops that frame's hits and keeps it running. |
 
 ### Alta's web services
 

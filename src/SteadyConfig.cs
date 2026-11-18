@@ -33,6 +33,7 @@ internal static class SteadyConfig
     private static MelonPreferences_Entry<int> _maxCatchUpMs;
     private static MelonPreferences_Entry<int> _jobWorkers;
     private static MelonPreferences_Entry<bool> _cutOffAlta;
+    private static MelonPreferences_Entry<bool> _impactResolverFix;
 
     public static bool ForcedGc => _forcedGc.Value;
     public static bool SpreadPlayerSaves => _spreadPlayerSaves.Value;
@@ -61,6 +62,7 @@ internal static class SteadyConfig
     public static int MaxCatchUpMs => Math.Max(0, _maxCatchUpMs.Value);
     public static int JobWorkers => Math.Max(0, _jobWorkers.Value);
     public static bool CutOffAlta => _cutOffAlta.Value;
+    public static bool ImpactResolverFix => _impactResolverFix.Value;
 
     public static void Init()
     {
@@ -92,6 +94,7 @@ internal static class SteadyConfig
         _maxCatchUpMs = category.CreateEntry("MaxCatchUpMs", 0, description: "Longest frame Unity simulates in full after a hitch (0 keeps Unity's 333). Lower ends hitches sooner, but game time slows during them.");
         _jobWorkers = category.CreateEntry("JobWorkers", 0, description: "Unity job worker threads (0 keeps Unity's choice, one per core). Under a container CPU limit, set it to the limit minus one.");
         _cutOffAlta = category.CreateEntry("CutOffAlta", true, description: "Cut off Alta's dead web services: calls that still ask them are skipped with an empty answer, and other requests to their hosts fail at once instead of hanging 40 s or more. Mods that answer these calls themselves (TavernLib, TavernEssentials) still do.");
+        _impactResolverFix = category.CreateEntry("ImpactResolverFix", true, description: "Keep the game's impact resolver running: one bad hit makes the game drop it, and then hits by held items (players hitting players on a server, the player's own hits on a client) do no damage until a restart. Steady skips hits it can't resolve and, if it fails anyway, drops that frame's hits instead.");
         // MelonLoader only saves on a clean exit, which a killed server never gets.
         category.SaveToFile(false);
     }

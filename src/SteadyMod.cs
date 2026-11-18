@@ -35,6 +35,7 @@ public class SteadyMod : MelonMod
         Others.Detect();
 
         AltaCutoff.Apply();
+        ImpactResolver.Apply();
         StreamFinalizers.Apply();
         ReceivePool.Apply();
         if (IsServer) LocalAreaFill.Apply();
