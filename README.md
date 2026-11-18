@@ -8,8 +8,8 @@ game does wastefully and leaves gameplay alone. Install it on a server, a client
 ## Fixes
 
 All on by default. Each has a setting under `[Steady]` in `UserData/MelonPreferences.cfg`, read at startup.
-On clients only `FastAreaFill`, `SuppressFinalizers`, `ReceivePoolSize`, `LogLevel`, `QuietPathfinding` and
-`CutOffAlta` apply.
+On clients only `FastAreaFill`, `ForestBudgetMs`, `SuppressFinalizers`, `ReceivePoolSize`, `LogLevel`,
+`QuietPathfinding` and `CutOffAlta` apply.
 
 ### Freezes
 

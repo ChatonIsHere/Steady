@@ -11,9 +11,10 @@ using UnityEngine;
 
 namespace Steady.Fixes;
 
-// When the server loads a forest chunk it runs the chunk's instructions (place this tree, that rock, ...) ten a
-// frame, each chunk on its own. Chunks load together as players move, so a frame can run the batches of twenty
-// or more chunks at once: 0.6 s frames were seen with four rovers in the forest. Steady gives all forest chunks
+// A loading forest chunk runs its instructions (place this tree, that rock, and so on) ten a frame, each chunk on
+// its own, on servers and clients alike. Chunks load together as players move, so a frame can run the batches of
+// twenty or more chunks at once: 0.6 s frames were seen on a server with four rovers in the forest, and a client
+// walking through the forest has about half the long frames with this on. Steady gives all forest chunks
 // one shared allowance a frame (ForestBudgetMs): an instruction starts only while the frame still has some left,
 // and the first one each frame always runs, so the forest keeps loading. Each chunk still runs at most ten a
 // frame, in the game's order, with the same results; it just spreads over more frames when the forest is busy.

@@ -39,6 +39,7 @@ public class SteadyMod : MelonMod
         ReceivePool.Apply();
         if (IsServer) LocalAreaFill.Apply();
         AreaFill.Apply();
+        ForestPacing.Apply();
         if (IsServer)
         {
             GcFix.Apply();
@@ -56,7 +57,6 @@ public class SteadyMod : MelonMod
             PathThreads.Apply();
             CaveScans.Apply();
             ChunkLoads.Apply();
-            ForestPacing.Apply();
             Alta.Console.CommandService.CommandCollection.Collect(Assembly.GetExecutingAssembly());
         }
         // NLog and the scene aren't set up until the game starts.
