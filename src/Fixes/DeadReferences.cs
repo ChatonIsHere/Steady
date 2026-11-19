@@ -48,6 +48,7 @@ namespace Steady.Fixes;
 internal static class DeadReferences
 {
     private const float SweepSeconds = 300f;
+    private const long SlowStepMs = 250;
     private static readonly AccessTools.FieldRef<Agent, HashSet<ITarget>> Provided =
         AccessTools.FieldRefAccess<Agent, HashSet<ITarget>>("providedTargets");
     private static readonly AccessTools.FieldRef<ImpactDetector, Dictionary<ImpactTool, float>> HitCooldowns =
@@ -133,14 +134,18 @@ internal static class DeadReferences
             _nextSweep = Time.realtimeSinceStartup + SweepSeconds;
             _step = 0;
         }
+        var step = Steps[_step++];
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         try
         {
-            Steps[_step++]();
+            step();
         }
         catch (Exception e)
         {
             SteadyMod.Log.Warning("DropDeadReferences: " + e.Message);
         }
+        if (clock.ElapsedMilliseconds >= SlowStepMs)
+            SteadyMod.Log.Warning($"DropDeadReferences: {step.Method.Name} took {clock.ElapsedMilliseconds} ms in one frame.");
     }
 
     // Detectors that were hit are remembered until their cooldowns run out, so the sweep needn't search for them.
@@ -298,15 +303,26 @@ internal static class DeadReferences
         Gone.Clear();
     }
 
-    // Removes the handlers of an event (static if no owner) whose target is gone.
+    // Removes the handlers of an event (static if no owner) whose target is gone. Every SpawnOnDestroyed (rocks,
+    // boulders, ores) adds one to ApplicationQuit and never takes it off, so these lists get long: removing the gone
+    // ones one by one copied the whole list each time, seconds in one frame on a busy server.
     private static void DropHandlers(System.Reflection.FieldInfo field, object owner, Func<object, bool> gone)
     {
         if (field == null || owner == null && !field.IsStatic || field.GetValue(owner) is not Delegate handlers) return;
-        var kept = handlers;
-        foreach (var handler in handlers.GetInvocationList())
-            if (handler.Target != null && gone(handler.Target)) kept = Delegate.Remove(kept, handler);
-        if (kept != handlers) field.SetValue(owner, kept);
+        var all = handlers.GetInvocationList();
+        var kept = new List<Delegate>(all.Length);
+        foreach (var handler in all)
+            if (handler.Target == null || !gone(handler.Target)) kept.Add(handler);
+        if (kept.Count < all.Length) field.SetValue(owner, Join(kept, 0, kept.Count));
     }
+
+    // Delegate.Combine copies both lists, so adding handlers one at a time would be as slow; halves keep it n log n.
+    private static Delegate Join(List<Delegate> handlers, int start, int count) => count switch
+    {
+        0 => null,
+        1 => handlers[start],
+        _ => Delegate.Combine(Join(handlers, start, count / 2), Join(handlers, start + count / 2, count - count / 2)),
+    };
 
     private static bool IsDestroyed(object o) => o is Object u && u == null;
 }
