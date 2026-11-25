@@ -67,7 +67,7 @@ internal static class SteadyConfig
     public static void Init()
     {
         var category = MelonPreferences.CreateCategory("Steady", "Steady");
-        _forcedGc = category.CreateEntry("ForcedGc", false, description: "Keep the game's full garbage collection every 30 s on servers. It freezes the server for 0.2-3 s each time; incremental GC does the job without it.");
+        _forcedGc = category.CreateEntry("ForcedGc", false, description: "Keep the game's full garbage collection every 30 s on servers. It freezes the server for 0.2-3 s each time; incremental GC does the job without it. It's also kept when server_settings.json sets garbage_collection_timer to anything but 30.");
         _spreadPlayerSaves = category.CreateEntry("SpreadPlayerSaves", true, description: "Save players over the frames after an autosave instead of all in one frame. Instant saves and shutdown still save everyone at once.");
         _playerSaveBudgetMs = category.CreateEntry("PlayerSaveBudgetMs", 2f, description: "With SpreadPlayerSaves, ms per frame to spend saving players (at least one player a frame).");
         _fastSpawnCheck = category.CreateEntry("FastSpawnCheck", true, description: "Check which players an entity is spawned for with a set lookup instead of a scan that allocates, on every network send.");
